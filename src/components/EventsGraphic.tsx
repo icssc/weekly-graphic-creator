@@ -1,6 +1,7 @@
 import "./EventsGraphic.scss";
 import html2canvas from "html2canvas";
 import { useContext, useRef } from "react";
+import { parseWeek } from "../util/quarterColors";
 import EventsContext, { type ClubEvent } from "./EventsContext";
 
 function Event({ data }: { data: ClubEvent }) {
@@ -71,7 +72,7 @@ const labels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const fullNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function EventsGraphic() {
-  const { events } = useContext(EventsContext);
+  const { events, setWeek } = useContext(EventsContext);
   const graphicRef = useRef<HTMLDivElement>(null);
 
   const buckets: { name: string; events: ClubEvent[] }[] = labels.map((l, i) => {
@@ -102,7 +103,13 @@ export default function EventsGraphic() {
   return (
     <>
       <div className="events-graphic-container" ref={graphicRef}>
-        <h1 className="header" contentEditable spellCheck="false">
+        <h1
+          className="header"
+          contentEditable
+          suppressContentEditableWarning
+          spellCheck="false"
+          onInput={(e) => setWeek(parseWeek(e.currentTarget.textContent ?? ""))}
+        >
           ICS Club Events: Week ##
         </h1>
         <div className="weekdays">

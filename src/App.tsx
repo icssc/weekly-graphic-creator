@@ -7,9 +7,10 @@ import EventsGraphic from "./components/EventsGraphic";
 function App() {
   const [events, setEvents] = useState<ClubEvent[]>([]);
   const [inputText, setInputText] = useState("");
+  const [week, setWeek] = useState<number | null>(null);
 
   return (
-    <EventsContext.Provider value={{ events, setEvents, inputText, setInputText }}>
+    <EventsContext.Provider value={{ events, setEvents, inputText, setInputText, week, setWeek }}>
       <main>
         <EventInput />
         <div className="preview">
