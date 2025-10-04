@@ -65,7 +65,7 @@ export default function EventInput () {
       <label>
         Background: <input type="color" name="background" defaultValue="#E9D7EC" onInput={handleColorChange} />
       </label>
+      <button>Add to Graphic</button>
     </div>
-    <button>Add to Graphic</button>
   </form>
 }

@@ -20,6 +20,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 20px 12px;
+    gap: 4px 12px;
+    padding: 6px 0;
+    > :nth-last-child(2) { margin-right: auto; }
   }
 }
