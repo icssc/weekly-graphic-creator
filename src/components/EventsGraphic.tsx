@@ -1,17 +1,28 @@
 import './EventsGraphic.scss';
-import { useContext } from "react"
+import { useContext, useRef } from "react"
 import EventsContext, { type ClubEvent } from "./EventsContext"
+import html2canvas from 'html2canvas'
 
 function Event ({ data }: { data: ClubEvent }) {
-  const shortName = data.clubName.replace(/\s*(@|at)\s*uci\s*$/gi, '').toLowerCase()
-  const source = `/club-logos/${shortName}.png`
+  const { events, setEvents, inputText, setInputText } = useContext(EventsContext);
+  const shortName = data.clubName.replace(/\s*(@|at)\s*uci\s*$/gi, '').toLowerCase();
+  const source = `/club-logos/${shortName}.png`;
 
-  return <div className="event">
+  const handleClick = (event: React.MouseEvent) => {
+    if (!event.altKey) return
+    // Remove if both club and event name are the same
+    setEvents(events.filter(ev => ev.clubName !== data.clubName || ev.eventName !== data.eventName))
+    const restoredText = `${data.clubName}\n${data.eventName}\n${data.location}\n` +
+      `${fullNames[labels.indexOf(data.dayOfWeek)]} ${data.startTime}-${data.endTime}`
+    setInputText(`${inputText}\n\n${restoredText}`.trim())
+  }
+
+  return <div className="event" onClick={handleClick}>
     <img src={source} alt={"Club icon for " + data.clubName} className="club-icon" width="78" />
-    <b>{data.clubName}</b>
-    <p>{data.eventName}</p>
-    <p>{data.location}</p>
-    <p>{data.startTime}-{data.endTime}</p>
+    <b>{data.clubName.trim()}</b>
+    <p>{data.eventName.trim()}</p>
+    <p>{data.location.trim()}</p>
+    <p>{data.startTime.trim()}-{data.endTime.trim()}</p>
   </div>
 }
 
@@ -42,6 +53,7 @@ const fullNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 
 export default function EventsGraphic () {
   const { events } = useContext(EventsContext)
+  const graphicRef = useRef<HTMLDivElement>(null)
 
   const buckets: { name: string; events: ClubEvent[] }[] = labels.map((l, i) => {
     return { events: events.filter(ev => ev.dayOfWeek === l), name: fullNames[i] }
@@ -53,12 +65,25 @@ export default function EventsGraphic () {
     buckets.pop();
   }
 
-  return <div className="events-graphic-container">
-    <h1 className="header" contentEditable>
-      ICS Club Events: Week 1
-    </h1>
-    <div className="weekdays">
-      {buckets.map(b => <EventsOnDay label={b.name} key={b.name} events={b.events}/>)}
+  const save = async () => {
+    if (!graphicRef.current) return;
+    graphicRef.current.style.zoom = '1';
+    const canvas = await html2canvas(graphicRef.current, { backgroundColor: 'black' })
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png')) as Blob | null
+    const url = URL.createObjectURL(blob!)
+    graphicRef.current.style.zoom = '';
+    window.open(url)
+  }
+
+  return <>
+    <div className="events-graphic-container" ref={graphicRef}>
+      <h1 className="header" contentEditable spellCheck="false">
+        ICS Club Events: Week ##
+      </h1>
+      <div className="weekdays">
+        {buckets.map(b => <EventsOnDay label={b.name} key={b.name} events={b.events}/>)}
+      </div>
     </div>
-  </div>
+    <button onClick={save}>Save Graphic (opens in new tab)</button>
+  </>
 }

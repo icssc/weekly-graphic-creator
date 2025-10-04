@@ -1,6 +1,3 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import { useState } from 'react'
 import './App.scss'
 import EventInput from './components/EventInput'
@@ -9,16 +6,16 @@ import EventsGraphic from './components/EventsGraphic'
 
 function App() {
   const [events, setEvents] = useState<ClubEvent[]>([])
+  const [inputText, setInputText] = useState('')
 
   return (
-    <EventsContext.Provider value={{ events, setEvents }}>
-      <div className="flex">
+    <EventsContext.Provider value={{ events, setEvents, inputText, setInputText }}>
+      <main>
         <EventInput />
         <div className="preview">
           <EventsGraphic />
-          <button>Save</button>
         </div>
-      </div>
+      </main>
     </EventsContext.Provider>
   )
 }

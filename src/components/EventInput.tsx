@@ -1,4 +1,5 @@
-import { useContext, useState } from "react"
+import './EventInput.scss';
+import { useContext } from "react"
 import type { ClubEvent } from "./EventsContext"
 import EventsContext from "./EventsContext"
 
@@ -25,8 +26,7 @@ function parseEventsFromMessages(text: string) {
 
 
 export default function EventInput () {
-  const { events, setEvents } = useContext(EventsContext)
-  const [inputText, setInputText] = useState('')
+  const { events, setEvents, inputText, setInputText } = useContext(EventsContext)
 
   const addEventsFromText = (text: string) => {
     const added = parseEventsFromMessages(text)
@@ -46,11 +46,26 @@ export default function EventInput () {
     addEventsFromText(inputText)
   }
 
+  const handleColorChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const target = event.target as HTMLInputElement
+    const property = '--col-' + target.name
+    document.body.style.setProperty(property, target.value)
+  }
+
   return <form className="text-input-container" action="" onSubmit={handleSubmit}>
+    <p>
+      Copy and paste in messages from Discord, customize colors, then click "Add to Graphic". Bulk imports are supported.
+      To remove an event from the graphic (i.e. if details need to be changed), alt+click on it.
+    </p>
     <textarea name="input" value={inputText} onInput={e => setInputText((e.target as HTMLTextAreaElement).value)}></textarea>
-    <input type="color" name="border" />
-    <input type="color" name="header" />
-    <input type="color" name="background" />
-    <input type="submit" value="Add to Graphic" />
+    <div className="color-pickers">
+      <label>
+        Header: <input type="color" name="header" defaultValue="#B053EA" onInput={handleColorChange} />
+      </label>
+      <label>
+        Background: <input type="color" name="background" defaultValue="#E9D7EC" onInput={handleColorChange} />
+      </label>
+    </div>
+    <button>Add to Graphic</button>
   </form>
 }

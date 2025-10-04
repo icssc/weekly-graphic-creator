@@ -11,7 +11,9 @@ export interface ClubEvent {
 
 const EventsContext = createContext({
   events: [] as ClubEvent[],
-  setEvents: (() => undefined) as React.Dispatch<ClubEvent[]>
+  setEvents: (() => undefined) as React.Dispatch<ClubEvent[]>,
+  inputText: '',
+  setInputText: (() => undefined) as React.Dispatch<string>
 })
 
 export default EventsContext;

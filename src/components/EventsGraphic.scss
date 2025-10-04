@@ -1,14 +1,15 @@
 .events-graphic-container {
   zoom: 0.75;
 
-  $background: red;
-  $border-size: 2px;
+  $background: black;
+  $border-size: 3px;
 
   background-color: $background;
   border: $border-size solid $background;
   display: flex;
   flex-direction: column;
   color: white;
+  margin-bottom: 16px;
 
   .weekdays {
     display: flex;
@@ -16,7 +17,7 @@
   }
 
   .header {
-    background-color: #B053EA;
+    background-color: var(--col-header, #B053EA);
   }
 
   .row {
@@ -24,14 +25,14 @@
     flex-direction: column; 
     gap: 12px;
     width: 162px;
-    background-color: #E9D7EC;
+    background-color: var(--col-background, #E9D7EC);
     padding: 0 6px 12px;
   }
 
   .row > .header {
     margin-inline: -6px;
     padding: 12px;
-    border-block: $border-size solid red;
+    border-block: $border-size solid $background;
   }
 
   .event {
@@ -41,7 +42,9 @@
     font-size: 16px;
     line-height: 1.25;
     color: black;
+    font-weight: 500;
     > p { margin: 0; }
+    b { font-weight: 900; }
   }
 
   h2, h3 {
