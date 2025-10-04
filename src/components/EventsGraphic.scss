@@ -1,0 +1,58 @@
+.events-graphic-container {
+  zoom: 0.75;
+
+  $background: red;
+  $border-size: 2px;
+
+  background-color: $background;
+  border: $border-size solid $background;
+  display: flex;
+  flex-direction: column;
+  color: white;
+
+  .weekdays {
+    display: flex;
+    gap: $border-size;
+  }
+
+  .header {
+    background-color: #B053EA;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: column; 
+    gap: 12px;
+    width: 162px;
+    background-color: #E9D7EC;
+    padding: 0 6px 12px;
+  }
+
+  .row > .header {
+    margin-inline: -6px;
+    padding: 12px;
+    border-block: $border-size solid red;
+  }
+
+  .event {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+    line-height: 1.25;
+    color: black;
+    > p { margin: 0; }
+  }
+
+  h2, h3 {
+    font-size: 24px;
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 40px;
+    margin: 0;
+    padding: 20px;
+  }
+}
