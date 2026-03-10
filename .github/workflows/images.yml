@@ -18,5 +18,5 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Check image dimension
+      - name: Check image dimensions
         run: bash ./check-images.sh
