@@ -1,12 +1,12 @@
 import "./EventsGraphic.scss";
+import html2canvas from "html2canvas";
 import { useContext, useRef } from "react";
 import EventsContext, { type ClubEvent } from "./EventsContext";
-import html2canvas from "html2canvas";
 
 function Event({ data }: { data: ClubEvent }) {
   const { events, setEvents, inputText, setInputText } = useContext(EventsContext);
   const shortName = data.clubName.replace(/\s*(@|at)\s*uci\s*$/gi, "").toLowerCase();
-  const source = `/icssc-weekly/club-logos/${shortName}.png`;
+  const source = `/weekly-graphic-creator/club-logos/${shortName}.png`;
 
   const handleClick = (event: React.MouseEvent) => {
     if (!event.altKey) return;
