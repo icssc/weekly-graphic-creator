@@ -32,8 +32,6 @@ To add a club logo, simply add an image with size 312x312 or 312x228 to the `pub
 
 ## Development TODOs
 
-- Auto-deploy to GitHub pages since it's a static site
-- Pre-commit format hook
 - Add asset file size checks
 
 # Template: React + TypeScript + Vite
