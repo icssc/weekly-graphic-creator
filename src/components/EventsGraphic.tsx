@@ -5,7 +5,10 @@ import EventsContext, { type ClubEvent } from "./EventsContext";
 
 function Event({ data }: { data: ClubEvent }) {
   const { events, setEvents, inputText, setInputText } = useContext(EventsContext);
-  const shortName = data.clubName.replace(/\s*(@|at)\s*uci\s*$/gi, "").toLowerCase();
+  const shortName = data.clubName
+    .trim()
+    .replace(/\s*(?:@\s*|\bat\b\s*)?\buci\b\s*$/gi, "")
+    .toLowerCase();
   const source = `/weekly-graphic-creator/club-logos/${shortName}.png`;
 
   const handleClick = (event: React.MouseEvent) => {
