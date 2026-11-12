@@ -18,7 +18,7 @@ function getLogoCandidates(clubName: string): string[] {
     .toLowerCase();
 
   const words = name.split(/[^a-z0-9]+/).filter(Boolean);
-  const candidates = [];
+  const candidates: string[] = [];
   if (words.length > 1) candidates.push(words.map((w) => w[0]).join(""));
   candidates.push(name);
   return candidates.filter((c, i) => c && candidates.indexOf(c) === i);
