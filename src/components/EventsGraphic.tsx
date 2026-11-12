@@ -1,15 +1,47 @@
 import "./EventsGraphic.scss";
 import html2canvas from "html2canvas";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import EventsContext, { type ClubEvent } from "./EventsContext";
+
+const UCI_PATTERN = /\s*(?:@\s*|\bat\b\s*)?\buci\b/gi;
+
+/**
+ * Returns possible logo file names for a club, in order of preference.
+ * Multi-word names are abbreviated by their initials, e.g. "Black in Tech" -> ["bit", "black in tech"]
+ */
+function getLogoCandidates(clubName: string): string[] {
+  const name = clubName
+    .replace(/[([][^)\]]*[)\]]/g, " ") // ignore parenthesized text
+    .replace(UCI_PATTERN, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+
+  const words = name.split(/[^a-z0-9]+/).filter(Boolean);
+  const candidates = [];
+  if (words.length > 1) candidates.push(words.map((w) => w[0]).join(""));
+  candidates.push(name);
+  return candidates.filter((c, i) => c && candidates.indexOf(c) === i);
+}
+
+function ClubIcon({ clubName }: { clubName: string }) {
+  const candidates = getLogoCandidates(clubName);
+  const [index, setIndex] = useState(0);
+  const candidate = candidates[Math.min(index, candidates.length - 1)];
+
+  return (
+    <img
+      src={`/weekly-graphic-creator/club-logos/${candidate}.png`}
+      alt={"Club icon for " + clubName}
+      className="club-icon"
+      width="78"
+      onError={() => setIndex((i) => (i + 1 < candidates.length ? i + 1 : i))}
+    />
+  );
+}
 
 function Event({ data }: { data: ClubEvent }) {
   const { events, setEvents, inputText, setInputText } = useContext(EventsContext);
-  const shortName = data.clubName
-    .trim()
-    .replace(/\s*(?:@\s*|\bat\b\s*)?\buci\b\s*$/gi, "")
-    .toLowerCase();
-  const source = `/weekly-graphic-creator/club-logos/${shortName}.png`;
 
   const handleClick = (event: React.MouseEvent) => {
     if (!event.altKey) return;
@@ -24,7 +56,7 @@ function Event({ data }: { data: ClubEvent }) {
   return (
     // biome-ignore lint/a11y: this is a secondary function
     <div className="event" onClick={handleClick}>
-      <img src={source} alt={"Club icon for " + data.clubName} className="club-icon" width="78" />
+      <ClubIcon key={data.clubName} clubName={data.clubName} />
       <b>{data.clubName.trim()}</b>
       <p>{data.eventName.trim()}</p>
       <p>{data.location.trim()}</p>
