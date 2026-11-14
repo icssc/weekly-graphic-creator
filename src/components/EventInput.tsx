@@ -1,5 +1,6 @@
 import "./EventInput.scss";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { getQuarterColors, type Quarter } from "../util/quarterColors";
 import type { ClubEvent } from "./EventsContext";
 import EventsContext from "./EventsContext";
 
@@ -26,7 +27,7 @@ function parseEventsFromMessages(text: string) {
 }
 
 export default function EventInput() {
-  const { events, setEvents, inputText, setInputText } = useContext(EventsContext);
+  const { events, setEvents, inputText, setInputText, quarter, setQuarter, week } = useContext(EventsContext);
 
   const addEventsFromText = (text: string) => {
     const added = parseEventsFromMessages(text);
@@ -46,10 +47,20 @@ export default function EventInput() {
     addEventsFromText(inputText);
   };
 
-  const handleColorChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const target = event.target as HTMLInputElement;
-    const property = "--col-" + target.name;
-    document.body.style.setProperty(property, target.value);
+  const [colors, setColors] = useState(() => getQuarterColors(quarter, week));
+
+  useEffect(() => {
+    setColors(getQuarterColors(quarter, week));
+  }, [quarter, week]);
+
+  useEffect(() => {
+    document.body.style.setProperty("--col-header", colors.header);
+    document.body.style.setProperty("--col-background", colors.background);
+  }, [colors]);
+
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setColors((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -65,10 +76,18 @@ export default function EventInput() {
       ></textarea>
       <div className="color-pickers">
         <label>
-          Header: <input type="color" name="header" defaultValue="#B053EA" onInput={handleColorChange} />
+          Header: <input type="color" name="header" value={colors.header} onChange={handleColorChange} />
         </label>
         <label>
-          Background: <input type="color" name="background" defaultValue="#E9D7EC" onInput={handleColorChange} />
+          Background: <input type="color" name="background" value={colors.background} onChange={handleColorChange} />
+        </label>
+        <label>
+          Quarter:{" "}
+          <select name="quarter" value={quarter} onChange={(e) => setQuarter(e.target.value as Quarter)}>
+            <option value="fall">Fall</option>
+            <option value="winter">Winter</option>
+            <option value="spring">Spring</option>
+          </select>
         </label>
         <button type="submit">Add to Graphic</button>
       </div>
