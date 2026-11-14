@@ -1,12 +1,7 @@
+// we don't make graphics in summer so we'll ignore
 export type Quarter = "fall" | "winter" | "spring";
 
 export const MAX_WEEK = 10;
-
-/** fixme: winter end date is variable depending on year.
- * not sure of better way to handle this other than querying AAPI, so just let the user
- * override with picker if needed ¯\_(ツ)_/¯
- */
-const WINTER_END_MARCH_DAY = 21;
 
 interface Palette {
   header: [string, string];
@@ -28,15 +23,6 @@ export const QUARTER_PALETTES: Record<Quarter, Palette> = {
     background: ["#E4F5DC", "#F5D9E9"],
   },
 };
-
-export function getQuarter(date: Date = new Date()): Quarter {
-  const month = date.getMonth(); // 0-indexed
-  const day = date.getDate();
-  if (month === 0 || month === 1) return "winter";
-  if (month === 2) return day <= WINTER_END_MARCH_DAY ? "winter" : "spring";
-  if (month >= 3 && month <= 5) return "spring";
-  return "fall"; // July and August can fallback to Fall
-}
 
 // Extracts week number (1-10) from header "ICS Club Events: Week xx"
 export function parseWeek(text: string): number | null {

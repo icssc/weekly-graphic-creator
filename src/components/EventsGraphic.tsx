@@ -1,6 +1,7 @@
 import "./EventsGraphic.scss";
 import html2canvas from "html2canvas";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { fetchCurrentTerm } from "../util/anteaterApi";
 import { parseWeek } from "../util/quarterColors";
 import EventsContext, { type ClubEvent } from "./EventsContext";
 
@@ -104,8 +105,27 @@ const labels = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const fullNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function EventsGraphic() {
-  const { events, setWeek } = useContext(EventsContext);
+  const { events, setWeek, setQuarter } = useContext(EventsContext);
   const graphicRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchCurrentTerm(controller.signal)
+      .then(({ week, quarter }) => {
+        if (quarter) setQuarter(quarter);
+        if (week !== null) {
+          // We make the graphic the week before, so add 1
+          const graphicWeek = week + 1;
+          if (headerRef.current) headerRef.current.textContent = `ICS Club Events: Week ${graphicWeek}`;
+          setWeek(parseWeek(`week ${graphicWeek}`));
+        }
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) console.warn("Could not load current term from Anteater API", error);
+      });
+    return () => controller.abort();
+  }, [setQuarter, setWeek]);
 
   const buckets: { name: string; events: ClubEvent[] }[] = labels.map((l, i) => {
     return {
@@ -136,6 +156,7 @@ export default function EventsGraphic() {
     <>
       <div className="events-graphic-container" ref={graphicRef}>
         <h1
+          ref={headerRef}
           className="header"
           contentEditable
           suppressContentEditableWarning

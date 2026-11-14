@@ -1,6 +1,6 @@
 import "./EventInput.scss";
 import { useContext, useEffect, useState } from "react";
-import { getQuarter, getQuarterColors, type Quarter } from "../util/quarterColors";
+import { getQuarterColors, type Quarter } from "../util/quarterColors";
 import type { ClubEvent } from "./EventsContext";
 import EventsContext from "./EventsContext";
 
@@ -27,7 +27,7 @@ function parseEventsFromMessages(text: string) {
 }
 
 export default function EventInput() {
-  const { events, setEvents, inputText, setInputText, week } = useContext(EventsContext);
+  const { events, setEvents, inputText, setInputText, quarter, setQuarter, week } = useContext(EventsContext);
 
   const addEventsFromText = (text: string) => {
     const added = parseEventsFromMessages(text);
@@ -47,8 +47,6 @@ export default function EventInput() {
     addEventsFromText(inputText);
   };
 
-  // default to quarter parsed using current date
-  const [quarter, setQuarter] = useState<Quarter>(() => getQuarter());
   const [colors, setColors] = useState(() => getQuarterColors(quarter, week));
 
   useEffect(() => {
