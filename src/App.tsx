@@ -19,6 +19,12 @@ function App() {
           <EventsGraphic />
         </div>
       </main>
+      <footer>
+        Current quarter/week data from{" "}
+        <a href="https://icssc.link/about-anteaterapi" target="_blank" rel="noreferrer">
+          Anteater API
+        </a>
+      </footer>
     </EventsContext.Provider>
   );
 }
